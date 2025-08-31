@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Book Cylinder</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #e9fbe5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .booking-box {
+      background: #fff;
+      padding: 2.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 400px;
+    }
+    .text-success {
+      color: #198754;
+    }
+    .btn-primary {
+      margin-top: 1rem;
+    }
+    .d-none {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="booking-box">
+    <h4 class="text-success mb-3">📦 Book Your Cylinder</h4>
+    <form id="bookingForm">
+      <div class="mb-3 text-start">
+        <label for="name" class="form-label">Name</label>
+        <input type="text" id="name" class="form-control" required>
+      </div>
+      <div class="mb-3 text-start">
+        <label for="phone" class="form-label">Phone No</label>
+        <input type="tel" id="phone" class="form-control" required pattern="[0-9]{10}">
+      </div>
+      <div class="mb-3 text-start">
+        <label for="address" class="form-label">Delivery Address</label>
+        <textarea id="address" class="form-control" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-success w-100">Book Cylinder</button>
+    </form>
+    <div id="confirmation" class="d-none">
+      <h4 class="text-success">✅ Booking Confirmed!</h4>
+      <p>LPG ID: <strong id="lpgId"></strong></p>
+      <p>Booking ID: <strong id="bookingId"></strong></p>
+      <p>Name: <strong id="cName"></strong></p>
+      <p>Phone No: <strong id="cPhone"></strong></p>
+      <p>Delivery Address: <strong id="cAddress"></strong></p>
+      <a href="dashboard.html" class="btn btn-primary w-100 mt-3">🔙 Back to Dashboard</a>
+    </div>
+    <div id="bookingDetails" class="d-none text-start mt-3">
+      <h5 class="text-success">📋 Latest Booking Details</h5>
+      <p>Name: <span id="dName"></span></p>
+      <p>Phone No: <span id="dPhone"></span></p>
+      <p>Delivery Address: <span id="dAddress"></span></p>
+      <p>LPG ID: <span id="dLpgId"></span></p>
+      <p>Booking ID: <span id="dBookingId"></span></p>
+    </div>
+  </div>
+  <script>
+    // Set LPG ID here (replace with actual logic if needed)
+    const lpgId = 'LPG123456';
+
+    document.getElementById('bookingForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const bookingId = 'BOOK' + Math.floor(100000 + Math.random() * 900000);
+
+      // Save booking to localStorage
+      let bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
+      bookings.push({ booking_id: bookingId, lpg_id: lpgId, name, phone, address });
+      localStorage.setItem('bookings', JSON.stringify(bookings));
+
+      // After booking is confirmed
+      const bookingDetails = { 
+        booking_id: bookingId, 
+        lpg_id: lpgId, 
+        name, 
+        phone, 
+        address 
+      };
+      localStorage.setItem('latestBooking', JSON.stringify(bookingDetails));
+
+      // Show confirmation
+      document.getElementById('bookingForm').classList.add('d-none');
+      document.getElementById('confirmation').classList.remove('d-none');
+      document.getElementById('lpgId').textContent = lpgId;
+      document.getElementById('bookingId').textContent = bookingId;
+      document.getElementById('cName').textContent = name;
+      document.getElementById('cPhone').textContent = phone;
+      document.getElementById('cAddress').textContent = address;
+    });
+
+    // Show latest booking details if available
+    const latestBooking = JSON.parse(localStorage.getItem('latestBooking') || 'null');
+    const role = 'customer'; // Set role here, replace with actual logic if needed
+    if (latestBooking && role === 'customer') {
+      document.getElementById('bookingDetails').style.display = '';
+      document.getElementById('dName').textContent = latestBooking.name;
+      document.getElementById('dPhone').textContent = latestBooking.phone;
+      document.getElementById('dAddress').textContent = latestBooking.address;
+      document.getElementById('dLpgId').textContent = latestBooking.lpg_id;
+      document.getElementById('dBookingId').textContent = latestBooking.booking_id;
+    }
+  </script>
+</body>
+</html>
